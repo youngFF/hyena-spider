@@ -1,11 +1,12 @@
 package com.hyena.spider.logger.test;
 
-import org.apache.log4j.Logger;
+import com.hyena.spider.log.logger.HyenaLogger;
+import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import org.junit.Test;
 
 public class LoggerFormatTest {
 
-    private static final Logger logger = Logger.getRootLogger() ;
+    private static final HyenaLogger logger = HyenaLoggerFactory.getRootLogger() ;
 
     @Test
     /**

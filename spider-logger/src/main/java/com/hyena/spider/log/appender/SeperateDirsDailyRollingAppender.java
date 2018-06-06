@@ -1,7 +1,8 @@
 package com.hyena.spider.log.appender;
 
+import com.hyena.spider.log.logger.HyenaLogger;
+import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import org.apache.log4j.DailyRollingFileAppender;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ public class SeperateDirsDailyRollingAppender extends DailyRollingFileAppender {
     private static final String LOG_DIR = "hyena-spider-log";
 
     // logger
-    private static final Logger logger = Logger.getLogger(SeperateDirsDailyRollingAppender.class);
+    private static final HyenaLogger logger = HyenaLoggerFactory.getLogger(SeperateDirsDailyRollingAppender.class);
 
 
     @Override
@@ -63,13 +64,6 @@ public class SeperateDirsDailyRollingAppender extends DailyRollingFileAppender {
         return null ;
     }
 
-    private  static void createLogHomeDir() {
-        // 组成log的主目录路径
-        String logHome = USER_HOME + "/" + LOG_DIR;
-        File dir = new File(logHome);
-        fileNotExistMake(dir);
-    }
-
     private static void fileNotExistMake(File dir) {
         if (!dir.exists()) {
             logger.warn("文件不存在 ：" + dir.getAbsolutePath() );
@@ -77,6 +71,13 @@ public class SeperateDirsDailyRollingAppender extends DailyRollingFileAppender {
             dir.mkdir();
             logger.info("文件创建成功 ： " + dir.getAbsolutePath() );
         }
+    }
+
+    private  static void createLogHomeDir() {
+        // 组成log的主目录路径
+        String logHome = USER_HOME + "/" + LOG_DIR;
+        File dir = new File(logHome);
+        fileNotExistMake(dir);
     }
 
 

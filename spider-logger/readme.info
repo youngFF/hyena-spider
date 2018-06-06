@@ -1,2 +1,2 @@
-注意：在mac下的intellij idea中测试时，log4.properties应该放在resource文件夹下，并且把resource文件夹
+注意：在mac下的intellij idea中测试时，log4.properties应该放在src/resource文件夹下，并且把resource文件夹
 标记为(marked as)resource
