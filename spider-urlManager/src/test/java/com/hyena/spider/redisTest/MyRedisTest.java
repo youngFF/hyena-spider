@@ -36,9 +36,31 @@ import redis.clients.jedis.Jedis;
  * 了10倍。
  * <p>
  * 所以：换一个想法，把200w个数据项，同时插入到10个Set类型的key中，看看这样的时间消耗情况。如下：
+ *
+ *
+ * single batch save succeed - key : url1 time : 12571
+ * single batch save succeed - key : url4 time : 12652
+ * single batch save succeed - key : url3 time : 12732
+ * single batch save succeed - key : url0 time : 12737
+ * single batch save succeed - key : url8 time : 12749
+ * single batch save succeed - key : url6 time : 12802
+ * single batch save succeed - key : url5 time : 12836
+ * single batch save succeed - key : url2 time : 12867
+ * single batch save succeed - key : url7 time : 12872
+ * single batch save succeed - key : url9 time : 12908
+ *
+ * 可以看到，利用多线程，每一个线程向一个key中批量，插入20w数据项，需要的时间将近十三秒。共有
+ * 10个线程同时向不同的key中插入，所以总的时候也就是13s。
+ *
+ * 结论：通过利用多线程将200w个数据，分别同时插入10个key中，需要的总时间为12.8s ，比起原来直接向一个key中
+ * 批量插入200w条数据所需要27s时间，时间大幅度下降。
+ *
+ * 所以说，在存储url时，可以根据某些条件，将url存到不同的key下，这样能减少存储时间。如url的网址，http://www.douban.com/a  , http://www.douban.com/b都存到
+ * key为douban.com下
  */
 public class MyRedisTest {
 
+    private static int threadCount = 10 ;
 
     //delete key
     @Test
@@ -112,19 +134,38 @@ public class MyRedisTest {
             }
             long end = System.currentTimeMillis();
 
-            System.out.println("batch save succeed : " + Thread.currentThread().getName() + " : " + (end - start));
+            System.out.println("single batch save succeed - key : " + Thread.currentThread().getName() + " time : " + (end - start));
 
 
         }
     }
 
-    @Test
-    public void multiBatchSaveTimeCosumingTest() {
 
-        int threadCount = 10 ;
+    /**
+     * multi thrad batch save timeCosuming test
+     * @param args
+     */
+    public static void main(String[] args) throws InterruptedException {
 
-        new Thread(new Worker()).start();
+        long start = System.currentTimeMillis() ;
+        for (int i = 0; i < threadCount; i++) {
+            Thread t = new Thread(new Worker());
+            t.setName("url" + i);
+            t.join();
+            t.start();
+        }
+        long end = System.currentTimeMillis();
+
+        System.out.println("multi thread batch save time cosuming : " + (end - start ));
     }
 
+    // batch del key
+    @Test
+    public void batchDelKeyTest() {
+        Jedis jedis = new Jedis("localhost");
+        for (int i = 0; i < threadCount; i++) {
+            jedis.del("url" + i);
+        }
+    }
 
 }
