@@ -39,7 +39,7 @@ public class JsoupHttpConnectionTest {
         System.out.println("statusCode: " + response.statusCode());
         System.out.println("cookies: " + response.cookies());
         System.out.println("charset: " + response.charset());
-        System.out.println("afterSetCharset: " + response.charset("utf-8").charset());
+        System.out.println("afterSetCharset: " + response.charset());
         System.out.println("contentType: "+response.contentType());
      //   System.out.println(response.parse());
         System.out.println(response);
