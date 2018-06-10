@@ -32,7 +32,7 @@ public class RedisConnection {
 
 
     // 返回redis client 服务类，就是jedis对象
-    public Jedis jedisServiceBean() {
+    public Jedis getJedisClient() {
         return this.jedisClient ;
     }
 
@@ -54,7 +54,6 @@ public class RedisConnection {
         WORKING ,
 
         AVAILABLE
-
 
 
     }
