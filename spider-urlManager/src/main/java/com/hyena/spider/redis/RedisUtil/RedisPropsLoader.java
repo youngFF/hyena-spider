@@ -18,7 +18,7 @@ public class RedisPropsLoader {
 
     // 要读取属性文件中的字段名称 , 可以修改使之获取你想要的redis连接配置
     private static final String[] redisTargetParams = {"redis.host", "redis.port", "redis.password",
-            "redis.timeout"};
+            "redis.timeout" ,"redis.connection.count"};
 
     // 存放redis属性的数据结构，也是直接的对外接口
     private static HashMap<String, String> redisParamsMap = new HashMap<String, String>();
@@ -69,4 +69,8 @@ public class RedisPropsLoader {
         redisParamsMap.put(redisProperty, redisConnValue);
     }
 
+
+    public static String getProperty(String property) {
+        return redisParamsMap.get(property);
+    }
 }

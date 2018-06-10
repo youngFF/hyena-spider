@@ -56,5 +56,12 @@ public class RedisConnectionConfigurer {
         return overrideProperty ? ownPort : DEFAULT_PORT ;
     }
 
-
+    /**
+     * 这个方法用来获取RedisConnectionConfigurer中没有提供方法接口的属性
+     * @param property
+     * @return
+     */
+    public static String getRedisConnectionProperty(String property) {
+        return RedisPropsLoader.getProperty(property);
+    }
 }
