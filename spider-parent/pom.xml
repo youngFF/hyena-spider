@@ -45,11 +45,7 @@
       </dependency>
 
 
-      <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.8</version>
-      </dependency>
+
       <!--jedis 作为访问redis的客户端-->
       <dependency>
           <groupId>redis.clients</groupId>

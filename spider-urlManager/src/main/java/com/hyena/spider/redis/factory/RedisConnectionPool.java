@@ -15,6 +15,7 @@ public class RedisConnectionPool {
 
 
     private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisConnectionPool.class);
+
     // 采用HashSet来存放连接
     private static HashSet<RedisConnection> connPool = new HashSet<>();
 
