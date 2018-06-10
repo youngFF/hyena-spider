@@ -10,8 +10,11 @@ public class RedisConnectionPropertyGetTest {
     public void redisConnectionPropertyGetTest() {
         RedisConnectionConfigurer configurer = new RedisConnectionConfigurer();
 
-        String localhost = configurer.getDefaultHost(true, "www.baidu.com");
+        String localhost = configurer.getHost();
         System.out.println(localhost);
+
+        String redisConnectionCount = RedisConnectionConfigurer.getRedisConnectionProperty("redis.connection.count");
+        System.out.println(redisConnectionCount);
     }
 
 

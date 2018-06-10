@@ -27,7 +27,7 @@ public class RedisPropsLoader {
         logger.info("加载reids属性文件...");
         redisProps = new Properties();
         // 找的是classpath下的资源
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("conf/redisConnectionConfiguration.properties");
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("redisConnectionConfiguration.properties");
         // 这条代码的作用是给用户提醒，在fillRedisParamterMap方法中还是需要对InputStream进行判空检查
         HyenaValidate.notNull(in);
 
@@ -53,7 +53,7 @@ public class RedisPropsLoader {
             }
 
             for (int i = 0; i < redisTargetParams.length; i++) {
-                logger.info("find redis connection properties : " + redisTargetParams[i]);
+                logger.info("找到redis连接属性 : " + redisTargetParams[i]);
                 redisParamsMap.put(redisTargetParams[i], redisProps.getProperty(redisTargetParams[i]));
             }
         }
@@ -73,4 +73,6 @@ public class RedisPropsLoader {
     public static String getProperty(String property) {
         return redisParamsMap.get(property);
     }
+
+
 }
