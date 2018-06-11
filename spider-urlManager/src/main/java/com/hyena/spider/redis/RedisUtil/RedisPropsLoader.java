@@ -11,15 +11,13 @@ import java.util.Properties;
 
 public class RedisPropsLoader {
 
-    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisPropsLoader.class);
-
-    // redis连接属性文件对象
-    private static Properties redisProps;
-
     // 要读取属性文件中的字段名称 , 可以修改使之获取你想要的redis连接配置
     private static final String[] redisTargetParams = {"redis.host", "redis.port", "redis.password",
-            "redis.timeout" ,"redis.connection.count"};
-
+            "redis.timeout", "redis.connection.count",
+            "redis.visited.name", "redis.todo.name"};
+    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisPropsLoader.class);
+    // redis连接属性文件对象
+    private static Properties redisProps;
     // 存放redis属性的数据结构，也是直接的对外接口
     private static HashMap<String, String> redisParamsMap = new HashMap<String, String>();
 
@@ -33,7 +31,7 @@ public class RedisPropsLoader {
 
         // 由于HyenaValidate.notNull抛出RuntimeException，所以fillRedisParameter方法
         // 中还需要对InputStream进行判空检查
-        fillRedisParameterMap(redisProps , in);
+        fillRedisParameterMap(redisProps, in);
     }
 
 
@@ -42,7 +40,7 @@ public class RedisPropsLoader {
     }
 
 
-    public static void fillRedisParameterMap(Properties props , InputStream in) {
+    public static void fillRedisParameterMap(Properties props, InputStream in) {
         logger.info("填充redis属性表");
         //
         if (in != null) {
@@ -65,7 +63,7 @@ public class RedisPropsLoader {
     }
 
     //设置redis的连接属性
-    public static void setRedisConnProperty(String redisProperty , String redisConnValue) {
+    public static void setRedisConnProperty(String redisProperty, String redisConnValue) {
         redisParamsMap.put(redisProperty, redisConnValue);
     }
 

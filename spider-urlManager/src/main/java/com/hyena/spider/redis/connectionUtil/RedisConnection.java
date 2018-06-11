@@ -41,6 +41,11 @@ public class RedisConnection {
         return this.jedisConnState ;
     }
 
+
+    public void setJedisConnState(JedisState jedisConnState) {
+        this.jedisConnState = jedisConnState;
+    }
+
     /**
      * 表示jedis链接在连接池中的状态，有两种状态：
      *

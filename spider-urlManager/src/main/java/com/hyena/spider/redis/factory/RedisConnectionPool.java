@@ -36,8 +36,10 @@ public class RedisConnectionPool {
 
     //TODO:接下来要做的是怎么对上层提供RedisConnection 接口
 
-    public  static RedisConnection getConnection() {
+    public  synchronized  static RedisConnection getConnection() {
         RedisConnection connection = candidateConnection();
+        // 连接设置为工作模式
+        connection.setJedisConnState(RedisConnection.JedisState.WORKING);
         return connection ;
     }
 

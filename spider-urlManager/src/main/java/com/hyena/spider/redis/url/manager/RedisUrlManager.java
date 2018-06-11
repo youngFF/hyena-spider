@@ -10,10 +10,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
+public class RedisUrlManager {
 
-public class Manager {
-
-    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(Manager.class);
+    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisUrlManager.class);
 
     private static final int VISITED_SIZE = 1024 * 1024; // 1M
 
@@ -21,7 +20,7 @@ public class Manager {
 
 
     // redis中的visited的key
-    private static String[] visitedKyes = RedisNamespaceDesignator.provideVisitedKyes();
+    private static String[] visitedKeys = RedisNamespaceDesignator.provideVisitedKyes();
 
     // redis中的todo的key
     private static String[] todoKeys = RedisNamespaceDesignator.provideTodoKeys() ;
@@ -45,7 +44,7 @@ public class Manager {
 
 
             // 只要有一个redis visited队列包含这个连接，我们就将这个url废弃
-            for (String visitedKey : visitedKyes) {
+            for (String visitedKey : visitedKeys) {
                 if (connection.getJedisClient().sismember(visitedKey, url)) {
                     logger.info(url + " 存在visited队列中，将被废弃");
                     return;
@@ -55,30 +54,34 @@ public class Manager {
 
             // 将url添加到 namespace中。
             try {
-
+                //这个url是标准化的url ，形如：http://www.baidu.com
                 URL url1 = new URL(url);
                 String host = url1.getHost() ;
                 connection.getJedisClient().sadd(host, url);
+
                 // 更新host namespace
                 RedisNamespaceDesignator.updateHostNamespace(host);
                 //注意这个logger必须在这里，因为只有上条语句成功执行之后，才可以打印日志
-                logger.info(url + "--- added to namespace --->" + host );
+                logger.info(url + "   added to namespace --->" + host );
             } catch (MalformedURLException e) {
                 logger.info("url malformed : " + url ) ;
                 e.printStackTrace();
+            }finally {
+                connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
             }
         }
-        logger.info(url + " 存在visited队列中，将被废弃");
 
     }
 
 
     /**
      * TODO : 怎么获取url是一个问题??????????
+     *
      * @return
      */
     public static String getUrl() {
 
+        return null;
     }
 
 }
