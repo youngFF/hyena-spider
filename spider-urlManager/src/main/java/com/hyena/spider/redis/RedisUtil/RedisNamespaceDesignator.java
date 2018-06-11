@@ -55,4 +55,7 @@ public class RedisNamespaceDesignator {
         }
     }
 
+    public static HashMap<String , Integer> getHostNamespace() {
+        return hostNamespace ;
+    }
 }

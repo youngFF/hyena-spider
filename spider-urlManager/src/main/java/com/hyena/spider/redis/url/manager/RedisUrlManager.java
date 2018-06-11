@@ -6,6 +6,8 @@ import com.hyena.spider.redis.RedisUtil.RedisNamespaceDesignator;
 import com.hyena.spider.redis.connectionUtil.RedisConnection;
 import com.hyena.spider.redis.factory.RedisConnectionPool;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -35,7 +37,8 @@ public class RedisUrlManager {
 
     /**
      * 在这个方法不进行url格式检查，应该交给上层接口，这个确保传过来的就是形如：http://www.baidu.com
-     * 这样的url
+     * 这样的url ，注意：这个方法有一个弊端就是如果循环调用putUrl的时候，每一次都要获取一个连接
+     * 我推荐使用重载的putUrl方法，
      * @param url
      */
     public static void putUrl(String url) {
@@ -64,8 +67,11 @@ public class RedisUrlManager {
                 //注意这个logger必须在这里，因为只有上条语句成功执行之后，才可以打印日志
                 logger.info(url + "   added to namespace --->" + host );
             } catch (MalformedURLException e) {
-                logger.info("url malformed : " + url ) ;
-                e.printStackTrace();
+                //利用重定向技术，将异常打印到日志文件中
+                StringWriter writer = new StringWriter();
+                PrintWriter pw = new PrintWriter(writer);
+                e.printStackTrace(pw);
+                logger.error(writer.toString());  ;
             }finally {
                 connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
             }
@@ -73,6 +79,48 @@ public class RedisUrlManager {
 
     }
 
+
+    /**
+     * 这个方法是针对循环调用的情景，只需要重用同一个connection
+     * @param url
+     * @param connection
+     */
+    public static void putUrl(String url , RedisConnection connection) {
+        if (! visitedInMemory.contains(url)) {
+
+            // 只要有一个redis visited队列包含这个连接，我们就将这个url废弃
+            for (String visitedKey : visitedKeys) {
+                if (connection.getJedisClient().sismember(visitedKey, url)) {
+                    logger.info(url + " 存在visited队列中，将被废弃");
+                    return;
+                }
+            }
+
+
+            // 将url添加到 namespace中。
+            try {
+                //这个url是标准化的url ，形如：http://www.baidu.com
+                URL url1 = new URL(url);
+                String host = url1.getHost() ;
+                connection.getJedisClient().sadd(host, url);
+
+                // 更新host namespace
+                RedisNamespaceDesignator.updateHostNamespace(host);
+                //注意这个logger必须在这里，因为只有上条语句成功执行之后，才可以打印日志
+                logger.info(url + "   added to namespace --->" + host );
+            } catch (MalformedURLException e) {
+                //利用重定向技术，将异常打印到日志文件中
+                StringWriter writer = new StringWriter();
+                PrintWriter pw = new PrintWriter(writer);
+                e.printStackTrace(pw);
+                logger.error(writer.toString());  ;
+
+            }finally {
+                connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
+            }
+        }
+
+    }
 
     /**
      * TODO : 怎么获取url是一个问题??????????
