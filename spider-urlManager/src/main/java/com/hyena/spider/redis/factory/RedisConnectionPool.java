@@ -23,7 +23,7 @@ public class RedisConnectionPool {
 
 
     static{
-        logger.info("初始化redis连接对象 ，数量：" + redisConnectionCount);
+        logger.info("初始化redis连接池 ，连接数量：" + redisConnectionCount);
         initConnectionPool();
     }
 

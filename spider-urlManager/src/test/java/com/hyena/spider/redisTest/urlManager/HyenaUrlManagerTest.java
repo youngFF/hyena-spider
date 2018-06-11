@@ -3,7 +3,7 @@ package com.hyena.spider.redisTest.urlManager;
 import com.hyena.spider.redis.RedisUtil.RedisNamespaceDesignator;
 import com.hyena.spider.redis.connectionUtil.RedisConnection;
 import com.hyena.spider.redis.factory.RedisConnectionPool;
-import com.hyena.spider.redis.url.manager.RedisUrlManager;
+import com.hyena.spider.redis.url.manager.HyenaUrlManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RedisUrlManagerTest {
+public class HyenaUrlManagerTest {
 
     /**
      * 测试用例：
@@ -60,7 +60,7 @@ public class RedisUrlManagerTest {
             if (href.startsWith("http") || href.startsWith("https"))
                 // 放到redis中的应该是进行过正规化处理的url
                 System.out.println(connection);
-                RedisUrlManager.putUrl(href ,connection);
+                HyenaUrlManager.putUrl(href ,connection);
         }
 
         HashMap<String, Integer> hostNamespace = RedisNamespaceDesignator.getHostNamespace();

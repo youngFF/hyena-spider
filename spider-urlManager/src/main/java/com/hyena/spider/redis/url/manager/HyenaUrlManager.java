@@ -12,9 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
-public class RedisUrlManager {
+public class HyenaUrlManager {
 
-    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisUrlManager.class);
+    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(HyenaUrlManager.class);
 
     private static final int VISITED_SIZE = 1024 * 1024; // 1M
 
