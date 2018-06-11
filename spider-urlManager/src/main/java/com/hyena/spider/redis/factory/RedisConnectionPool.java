@@ -18,7 +18,7 @@ public class RedisConnectionPool {
 
     private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisConnectionPool.class);
 
-    // 采用HashSet来存放连接
+    // 采用ArrayList来存放连接
     private static ArrayList<RedisConnection> connPool = new ArrayList<>();
 
 
@@ -36,7 +36,7 @@ public class RedisConnectionPool {
 
     //TODO:接下来要做的是怎么对上层提供RedisConnection 接口
 
-    public synchronized RedisConnection getConnection() {
+    public  static RedisConnection getConnection() {
         RedisConnection connection = candidateConnection();
         return connection ;
     }
@@ -47,19 +47,25 @@ public class RedisConnectionPool {
      * 连接对象
      * @return
      */
-    private synchronized static RedisConnection candidateConnection() {
+    private  static RedisConnection candidateConnection() {
         RedisConnection connection = null ;
         for (int i = 0; i < loopRound; i++) {
-
-            for (  ;currentPoolPosition < connPool.size(); currentPoolPosition++) {
-                if ((connection =connPool.get(currentPoolPosition)).getJedisState() == RedisConnection.JedisState.AVAILABLE) {
-                    return connection ;
+            // 保存线程池的轮训指针位置，如果到达线程池limit位置，指针重新回到原始位置
+            if (currentPoolPosition == connPool.size()) {
+                currentPoolPosition = 0;
+            }
+            for (; currentPoolPosition < connPool.size(); currentPoolPosition++) {
+                if ((connection = connPool.get(currentPoolPosition)).getJedisState() == RedisConnection.JedisState.AVAILABLE) {
+                    return connection;
                 }
             }
         }
 
         return new RedisConnection();
     }
+
+
+
 
 }
 
