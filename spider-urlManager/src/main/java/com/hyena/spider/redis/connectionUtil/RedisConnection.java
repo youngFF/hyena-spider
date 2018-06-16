@@ -10,6 +10,7 @@ public class RedisConnection {
     private Jedis jedisClient  ;
 
     // jedis connection state
+    // 当在程序代码中使用完连接的时候，要把RedisConnection的jedisConnState的值改为AVILABLE
     private JedisState jedisConnState ;
 
 
@@ -19,6 +20,15 @@ public class RedisConnection {
         this.jedisConnState = JedisState.AVAILABLE ;
     }
 
+    // TODO
+    /*public RedisConnection(String host, String password) {
+        this.jedisClient = new Jedis(host,)
+    }*/
+
+    public RedisConnection(Jedis jedis) {
+        this.jedisClient = jedis ;
+        this.jedisConnState = JedisState.AVAILABLE ;
+    }
 
     // 使用redisConnectionConfiguration.properties里面的属性配置redis client对象
     public RedisConnection(RedisConnectionConfigurer configurer) {

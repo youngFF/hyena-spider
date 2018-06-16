@@ -22,7 +22,7 @@ public class HyenaUrlManager {
 
 
     // redis中的visited的key
-    private static String[] visitedKeys = RedisNamespaceDesignator.provideVisitedKyes();
+    private static String[] visitedKeys = RedisNamespaceDesignator.provideVisitedKeys();
 
     // redis中的todo的key
     private static String[] todoKeys = RedisNamespaceDesignator.provideTodoKeys() ;
@@ -116,6 +116,7 @@ public class HyenaUrlManager {
                 logger.error(writer.toString());  ;
 
             }finally {
+                // 向RedisConnectionPool归还RedisConnection
                 connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
             }
         }
@@ -124,6 +125,7 @@ public class HyenaUrlManager {
 
     /**
      * TODO : 怎么获取url是一个问题??????????
+     * 这个方法耗费了我很长的时间。。。。。。。。。。。。。。-_-!!!
      *
      * @return
      */

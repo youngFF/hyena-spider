@@ -2,6 +2,7 @@ package com.hyena.spider.redis.RedisUtil;
 
 
 import com.hyena.spider.redis.configure.RedisConnectionConfigurer;
+import com.hyena.spider.redis.connectionUtil.RedisConnection;
 
 import java.util.HashMap;
 
@@ -27,16 +28,23 @@ public class RedisNamespaceDesignator {
 
 
     /**
-     * 管理程序每次运行时以解析host及相应的url数量
+     * 记录Redis中namespace的key和其对应的Set中元素的数量
      */
     private static HashMap<String, Integer> hostNamespace = new HashMap<>();
+
+
+    static {
+        // 这里就不使用连接池中的连接了
+        RedisConnection redisConnection = new RedisConnection();
+        //TODO:从redis中读取namespace以及对应的url数量。
+    }
 
     /**
      * 提供visited命名空间
      *
      * @return
      */
-    public static String[] provideVisitedKyes() {
+    public static String[] provideVisitedKeys() {
         return visitedKeys;
     }
 

@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisShardInfo;
 
 import java.io.IOException;
 import java.net.URL;
@@ -61,6 +63,34 @@ public class HyenaUrlManagerTest {
                 // 放到redis中的应该是进行过正规化处理的url
                 System.out.println(connection);
                 HyenaUrlManager.putUrl(href ,connection);
+        }
+
+        HashMap<String, Integer> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
+
+        Set<Map.Entry<String, Integer>> entries = hostNamespace.entrySet();
+        System.out.println();
+        System.out.println("----------------------");
+
+        for (Map.Entry entry : entries) {
+            System.out.println("host : " + entry.getKey() + "  url nums : " + entry.getValue());
+        }
+    }
+
+
+
+    @Test
+    public void addUrlToRemoteRedisTest() throws IOException {
+        Document document = Jsoup.parse(new URL(host), 5000);
+        Elements ahrefs = document.getElementsByTag("a");
+        JedisShardInfo info = new JedisShardInfo("47.104.79.16", 56379, 3000);
+        info.setPassword("__yanghe@0510");
+        Jedis jedis = new Jedis(info);
+        for (Element element : ahrefs) {
+            String href = element.attr("abs:href");
+            if (href.startsWith("http") || href.startsWith("https"))
+                // 放到redis中的应该是进行过正规化处理的url
+                System.out.println(jedis);
+            HyenaUrlManager.putUrl(href ,new RedisConnection(jedis));
         }
 
         HashMap<String, Integer> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
