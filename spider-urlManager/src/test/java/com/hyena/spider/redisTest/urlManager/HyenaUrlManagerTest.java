@@ -14,9 +14,7 @@ import redis.clients.jedis.JedisShardInfo;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class HyenaUrlManagerTest {
 
@@ -65,14 +63,16 @@ public class HyenaUrlManagerTest {
                 HyenaUrlManager.putUrl(href ,connection);
         }
 
-        HashMap<String, Integer> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
+        HashSet<String> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
 
-        Set<Map.Entry<String, Integer>> entries = hostNamespace.entrySet();
+
         System.out.println();
         System.out.println("----------------------");
 
-        for (Map.Entry entry : entries) {
-            System.out.println("host : " + entry.getKey() + "  url nums : " + entry.getValue());
+        String host =null ;
+        for (Iterator<String> it = hostNamespace.iterator(); it.hasNext(); ) {
+            host  = it.next();
+            System.out.println("host : " + host);
         }
     }
 
@@ -93,14 +93,17 @@ public class HyenaUrlManagerTest {
             HyenaUrlManager.putUrl(href ,new RedisConnection(jedis));
         }
 
-        HashMap<String, Integer> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
+        HashSet<String> hostNamespace = RedisNamespaceDesignator.getHostNamespace();
 
-        Set<Map.Entry<String, Integer>> entries = hostNamespace.entrySet();
+
         System.out.println();
         System.out.println("----------------------");
 
-        for (Map.Entry entry : entries) {
-            System.out.println("host : " + entry.getKey() + "  url nums : " + entry.getValue());
+        /**
+         * you can iterator hostNamespace here
+         */
+        for (String s : hostNamespace) {
+            System.out.println("host : " + s );
         }
     }
 

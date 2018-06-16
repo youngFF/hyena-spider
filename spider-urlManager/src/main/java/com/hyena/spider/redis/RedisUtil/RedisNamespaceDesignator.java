@@ -5,6 +5,8 @@ import com.hyena.spider.redis.configure.RedisConnectionConfigurer;
 import com.hyena.spider.redis.connectionUtil.RedisConnection;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 管理redis中，visited，todo，namespace，的名字，
@@ -28,15 +30,21 @@ public class RedisNamespaceDesignator {
 
 
     /**
-     * 记录Redis中namespace的key和其对应的Set中元素的数量
+     * 记录以解析的namespace，如果hostNamespace的数量为1，说明这是一个定向爬虫，爬去特定的站点。
      */
-    private static HashMap<String, Integer> hostNamespace = new HashMap<>();
+    private static HashSet<String> hostNamespace = new HashSet<String>();
 
 
     static {
         // 这里就不使用连接池中的连接了
         RedisConnection redisConnection = new RedisConnection();
-        //TODO:从redis中读取namespace以及对应的url数量。
+        // host namespace in redis
+        Set<String> keys = redisConnection.getJedisClient().keys("*.*");
+
+        for (String key : keys) {
+            hostNamespace.add(key);
+        }
+
     }
 
     /**
@@ -49,21 +57,25 @@ public class RedisNamespaceDesignator {
     }
 
 
+    /**
+     * 提供todo命名空间
+     * @return
+     */
     public static String[] provideTodoKeys() {
         return todoKeys;
     }
 
 
-    public static void updateHostNamespace(String host) {
-        Integer old = hostNamespace.get(host);
-        if (old == null) {
-            hostNamespace.put(host, 1);
-        } else {
-            hostNamespace.put(host, 1 + old);
-        }
+    /**
+     * 提供url命令空间，即namespace
+     * @return
+     */
+    public static HashSet<String> getHostNamespace() {
+        return hostNamespace ;
     }
 
-    public static HashMap<String , Integer> getHostNamespace() {
-        return hostNamespace ;
+
+    public static void updateHostNamespace(String host) {
+        hostNamespace.add(host);
     }
 }
