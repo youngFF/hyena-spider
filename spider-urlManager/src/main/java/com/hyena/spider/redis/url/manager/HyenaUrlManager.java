@@ -14,6 +14,9 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+/**
+ * 将redis中的todo队列删除，因为我觉得这是一个冗余的设计
+ */
 public class HyenaUrlManager {
 
     private static final int VISITED_SIZE = 1024 * 1024; // 1M
