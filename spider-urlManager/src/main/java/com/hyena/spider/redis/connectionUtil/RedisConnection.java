@@ -36,8 +36,8 @@ public class RedisConnection {
         this.jedisConnState = JedisState.AVAILABLE ;
     }
 
-    // 这个构造方法是内部使用
-    private RedisConnection(JedisShardInfo infoBall) {
+
+    public  RedisConnection(JedisShardInfo infoBall) {
         this.jedisClient = new Jedis(infoBall);
         this.jedisConnState = JedisState.AVAILABLE ;
     }
