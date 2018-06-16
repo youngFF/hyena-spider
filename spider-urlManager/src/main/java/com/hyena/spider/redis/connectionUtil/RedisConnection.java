@@ -2,6 +2,7 @@ package com.hyena.spider.redis.connectionUtil;
 
 import com.hyena.spider.redis.configure.RedisConnectionConfigurer;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisShardInfo;
 
 public class RedisConnection {
 
@@ -20,25 +21,36 @@ public class RedisConnection {
         this.jedisConnState = JedisState.AVAILABLE ;
     }
 
-    // TODO
-    /*public RedisConnection(String host, String password) {
-        this.jedisClient = new Jedis(host,)
-    }*/
 
+    /**
+     * 对外的构造方法
+     * @param host
+     * @param port
+     * @param password
+     */
+    public RedisConnection(String host, int port, String password) {
+
+        JedisShardInfo infoBall = new JedisShardInfo(host, port);
+        infoBall.setPassword(password);
+        this.jedisClient = new Jedis(infoBall);
+        this.jedisConnState = JedisState.AVAILABLE ;
+    }
+
+    // 这个构造方法是内部使用
+    private RedisConnection(JedisShardInfo infoBall) {
+        this.jedisClient = new Jedis(infoBall);
+        this.jedisConnState = JedisState.AVAILABLE ;
+    }
+
+    /**
+     * 这个构造方法是包装Jedis对象的，最好测试时候使用
+     * @param jedis
+     */
     public RedisConnection(Jedis jedis) {
         this.jedisClient = jedis ;
         this.jedisConnState = JedisState.AVAILABLE ;
     }
 
-    // 使用redisConnectionConfiguration.properties里面的属性配置redis client对象
-    public RedisConnection(RedisConnectionConfigurer configurer) {
-        String host = configurer.getHost() ;
-        int port = configurer.getPort() ;
-        int timeout = configurer.getTimeout() ;
-
-        this.jedisClient = new Jedis(host, port, timeout);
-        this.jedisConnState = JedisState.AVAILABLE ;
-    }
 
 
     // 返回redis client 服务类，就是jedis对象

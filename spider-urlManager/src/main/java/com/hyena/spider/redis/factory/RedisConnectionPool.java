@@ -4,6 +4,7 @@ import com.hyena.spider.log.logger.HyenaLogger;
 import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import com.hyena.spider.redis.configure.RedisConnectionConfigurer;
 import com.hyena.spider.redis.connectionUtil.RedisConnection;
+import com.hyena.spider.redis.connectionUtil.RedisConnectionTypeCreator;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,11 @@ public class RedisConnectionPool {
 
     private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisConnectionPool.class);
 
+
+    private static final String CONNECTION_TYPE = RedisConnectionConfigurer.
+            getRedisConnectionProperty("redis.connection.type.policy");
+
+
     // 采用ArrayList来存放连接
     private static ArrayList<RedisConnection> connPool = new ArrayList<>();
 
@@ -29,8 +35,10 @@ public class RedisConnectionPool {
 
 
     private static void initConnectionPool() {
+
         for (int i = 0; i < redisConnectionCount; i++) {
-            connPool.add(new RedisConnection());
+            //根据CONNECTION_TYPE的值来确定这个RedisConnection对象到底是什么样的。
+            connPool.add(RedisConnectionTypeCreator.getRedisConnection(CONNECTION_TYPE));
         }
     }
 
