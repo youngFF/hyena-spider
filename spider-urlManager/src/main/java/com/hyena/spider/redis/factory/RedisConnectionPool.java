@@ -71,7 +71,7 @@ public class RedisConnectionPool {
             }
         }
 
-        return new RedisConnection();
+        return RedisConnectionTypeCreator.getRedisConnection(CONNECTION_TYPE) ;
     }
 
 

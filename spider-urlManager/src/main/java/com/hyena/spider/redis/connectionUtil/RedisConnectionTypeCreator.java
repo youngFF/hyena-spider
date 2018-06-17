@@ -17,6 +17,12 @@ public class RedisConnectionTypeCreator {
     private static JedisShardInfo infoBall = new JedisShardInfo(host, port);
 
     static {
+        // 不直接写infoBall语句
+//        infoBall.setPassword(password)
+        initSharInfo(infoBall);
+    }
+
+    private static void initSharInfo(JedisShardInfo infoBall) {
         infoBall.setPassword(password);
     }
 
