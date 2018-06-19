@@ -94,7 +94,7 @@ public class HyenaUrlManager {
      * @param url
      * @param connection
      */
-    public static void putUrl(String url, RedisConnection connection) {
+    public synchronized static void putUrl(String url, RedisConnection connection) {
         if (!visitedInMemory.contains(url)) {
 
             // 只要有一个redis visited队列包含这个连接，我们就将这个url废弃
@@ -139,7 +139,7 @@ public class HyenaUrlManager {
      *
      * @return
      */
-    public static String getUrl() {
+    public synchronized  static String getUrl() {
         // 如果todoInMemory队列不为空，则返回队列首的url
         if (todoInMemory.size() != 0) {
             String url = todoInMemory.removeFirst();
