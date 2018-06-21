@@ -79,7 +79,6 @@ public class HyenaUrlManager {
                 PrintWriter pw = new PrintWriter(writer);
                 e.printStackTrace(pw);
                 logger.error(writer.toString());
-                ;
             } finally {
                 connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
             }

@@ -42,7 +42,6 @@ public class HyenaUrlManagerTest {
                 System.out.println(href);
         }
 
-
     }
 
     /**

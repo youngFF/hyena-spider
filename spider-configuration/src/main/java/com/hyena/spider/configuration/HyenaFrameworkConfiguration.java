@@ -28,7 +28,7 @@ public class HyenaFrameworkConfiguration {
 
     private static final int DEFAULT_MAX_THREAD_COUNT = 20 ;
 
-    // base
+    // base filter tags
     private static final String BASE_FILTER_TAGS = "a,img";
 
 
@@ -54,6 +54,11 @@ public class HyenaFrameworkConfiguration {
     }
 
 
+    static {
+        //不要在外部主动调用，而是当类载入的时候就进行hyena-frame条件检查
+        checkHyenaConfig();
+    }
+
     /**
      * hyena-spider使用checkHyenaConfig对框配置进行检查。
      * 主要检查的方面有：
@@ -61,6 +66,8 @@ public class HyenaFrameworkConfiguration {
      *      spider-global.properties中的字段是否被正确设置。
      *
      *      一下三个方法是提供给上层的三个接口
+     *
+     * 必须调用checkProperties方法之后，才能使用filterTags
      */
     public static void checkHyenaConfig() {
         checkRedisAlive();
@@ -70,6 +77,11 @@ public class HyenaFrameworkConfiguration {
 
     public static String getFilterTags() {
         return filterTags ;
+    }
+
+
+    public static String getHyenaConfig(String config) {
+        return getProperty(file).getProperty(config);
     }
 
     public static int getMaxThreadCount() {
@@ -168,6 +180,7 @@ public class HyenaFrameworkConfiguration {
     }
 
 
+
     private static Properties getProperty(String path)  {
         Properties props = new Properties();
         InputStream resource = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
@@ -184,5 +197,7 @@ public class HyenaFrameworkConfiguration {
         }
         return props ;
     }
+
+
 
 }
