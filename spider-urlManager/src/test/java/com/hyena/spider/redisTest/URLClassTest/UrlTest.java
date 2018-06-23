@@ -12,7 +12,7 @@ public class UrlTest {
 
     @Test
     public void urlTest() throws IOException {
-        URL url = new URL("http://www.baidu.com/?name=hyena&kw=what#anchor");
+        URL url = new URL("http://www.baidu.com/a/c/v");
 
         System.out.println("authority: " + url.getAuthority());
         System.out.println("content : " + url.getContent());

@@ -34,6 +34,8 @@ public class UrlExtractor extends AbstractExtractor {
         for (Element element : tags) {
             //存到redis当中
             url = element.attr("abs:href");
+
+            //因为formatUrl会为null，所以需要对它进行再次判断
             String formatUrl = UrlFilter.formatUrl(url);
 
             logger.info("解析出url : " + formatUrl);

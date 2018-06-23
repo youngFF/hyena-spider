@@ -1,6 +1,7 @@
 package com.hyena.spider.datastore;
 
 import com.hyena.spider.filesystem.FileRepository;
+import org.jsoup.helper.HttpConnection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +23,14 @@ public class ImgDataStore {
         try {
             // 图片的url地址
             URL url = new URL(imgSrc);
-            //图片的输入流
-            InputStream inputStream = url.openStream();
+
+            HttpConnection connection = (HttpConnection) HttpConnection.connect(url);
+            connection.referrer(imgSrc);
 
             FileRepository fileRepository = new FileRepository();
 
             //将图片存到本地
-            fileRepository.imgSave(url,imgBuffer ,inputStream);
+            fileRepository.imgSave(url ,connection);
 
         } catch (IOException e) {
             e.printStackTrace();

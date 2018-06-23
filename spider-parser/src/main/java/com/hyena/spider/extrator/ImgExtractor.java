@@ -7,8 +7,7 @@ import org.jsoup.select.Elements;
 
 public class ImgExtractor extends AbstractExtractor {
 
-    private static final String[] IMG_SUFFIX = {"png" , "jpg" , "jpeg" ,"gif"} ;
-
+    private static final String[] IMG_SUFFIX = {"png", "jpg", "jpeg", "gif"};
 
 
     @Override
@@ -31,19 +30,17 @@ public class ImgExtractor extends AbstractExtractor {
     }
 
 
-    private boolean acceptImg(String imgSrc , String[] srcFormats) {
-        boolean accept = false ;
+    private boolean acceptImg(String imgSrc, String[] srcFormats) {
+        boolean accept = false;
 
         for (String srcFormat : srcFormats) {
-              accept = accept || imgSrc.endsWith(srcFormat) ;
+            accept = accept || imgSrc.endsWith(srcFormat);
         }
 
-        return accept ;
-
+        return accept;
 
 
     }
-
 
 
 }
