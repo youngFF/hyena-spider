@@ -28,7 +28,7 @@ public class ImgExtractorTest {
      *  http://www.qq.com
      */
 
-    private static String host = "http://www.mm131.com/xinggan/4092.html" ;
+    private static String host = "http://www.mm131.com/xinggan/";
 
     @Test
     public void extractImgSrc() throws IOException {
@@ -53,6 +53,25 @@ public class ImgExtractorTest {
     }
 
 
+    @Test
+    public void pageBatchSaveImgs() throws IOException {
+        Document document = Jsoup.parse(new URL(host), 5000);
+        Elements ahrefs = document.getElementsByTag("a");
+
+        for (Element element : ahrefs) {
+            String href = element.attr("abs:href");
+            if (href.startsWith("http") || href.startsWith("https")){
+                try {
+                    Document document1 = Jsoup.parse(new URL(href), 5000);
+                    ImgExtractor imgExtractor = new ImgExtractor();
+                    imgExtractor.extract(document1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
 
     @Test
     public void singlePicDownLoad() throws IOException {
