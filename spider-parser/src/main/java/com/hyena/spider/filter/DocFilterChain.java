@@ -41,6 +41,9 @@ public class DocFilterChain {
      * 提供给上层接口
      */
     public void doFilter() {
+
+
+        //提供Document对象
         HttpExecutor executor = new HttpExecutor() ;
         Document doc = executor.execute();
 

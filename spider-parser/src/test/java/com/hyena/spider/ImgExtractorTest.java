@@ -75,13 +75,13 @@ public class ImgExtractorTest {
 
     @Test
     public void singlePicDownLoad() throws IOException {
-        String url = "http://img1.mm131.me/pic/3142/0.jpg" ;
+        String url = "http://img1.mm131.me/pic/3142/13.jpg" ;
         HttpConnection connection = (HttpConnection) HttpConnection.connect(url);
         // 必须要带referrer
         connection.referrer("http://www.mm131.com/xinggan/4093.html");
         byte[] imgBytes = connection.execute().bodyAsBytes();
 
-        File img = new File("/home/hyena/1.jpg");
+        File img = new File("/home/hyena/13.jpg");
         FileOutputStream fos = new FileOutputStream(img);
         fos.write(imgBytes);
         fos.close();
