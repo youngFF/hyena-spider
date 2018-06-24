@@ -1,4 +1,4 @@
-package com.hyena.spider;
+package com.hyena.spider.work;
 
 import com.hyena.spider.parser.DefaultParser;
 import com.hyena.spider.parser.HyenaParser;
