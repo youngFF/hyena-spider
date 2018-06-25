@@ -14,7 +14,7 @@ public class RedisPropsLoader {
     // 要读取属性文件中的字段名称 , 可以修改使之获取你想要的redis连接配置
     private static final String[] redisTargetParams = {"redis.host", "redis.port", "redis.password",
             "redis.timeout", "redis.connection.count",
-            "redis.visited.name", "redis.todo.name"};
+            "redis.visited.name", "redis.todo.name" ,"redis.connection.type.policy"};
     private static HyenaLogger logger = HyenaLoggerFactory.getLogger(RedisPropsLoader.class);
     // redis连接属性文件对象
     private static Properties redisProps;
@@ -69,7 +69,7 @@ public class RedisPropsLoader {
 
 
     public static String getProperty(String property) {
-        return redisParamsMap.get(property);
+        return redisParamsMap.get(property) ;
     }
 
 

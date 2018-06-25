@@ -49,7 +49,7 @@ public class RedisConnectionConfigurer {
 
     public int getPort() {
         return RedisPropsLoader.getRedisConnProperty("redis.port") !=null
-                ? Integer.valueOf(RedisPropsLoader.getRedisConnProperty("redis.host")) : DEFAULT_PORT;
+                ? Integer.valueOf(RedisPropsLoader.getRedisConnProperty("redis.port")) : DEFAULT_PORT;
     }
 
     public int getDefaultPort(boolean overrideProperty , int ownPort) {

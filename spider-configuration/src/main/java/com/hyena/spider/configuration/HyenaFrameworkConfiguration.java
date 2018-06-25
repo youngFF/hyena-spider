@@ -57,6 +57,7 @@ public class HyenaFrameworkConfiguration {
     static {
         //不要在外部主动调用，而是当类载入的时候就进行hyena-frame条件检查
         checkHyenaConfig();
+        maxThreadCount = Integer.valueOf(getProperty(file).getProperty("hyena.maxThreadCount"));
     }
 
     /**
@@ -85,7 +86,9 @@ public class HyenaFrameworkConfiguration {
     }
 
     public static int getMaxThreadCount() {
-        return maxThreadCount ;
+
+        //静态int属性如果没有设置的话为0
+        return maxThreadCount != 0 ? maxThreadCount : DEFAULT_MAX_THREAD_COUNT;
     }
    // ..................................................... //
     private static void checkRedisAlive() {
