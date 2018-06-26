@@ -22,15 +22,12 @@ import java.util.Set;
  */
 public class RedisNamespaceDesignator {
 
-    private static String[] visitedKeys = RedisConnectionConfigurer.
-            getRedisConnectionProperty("redis.visited.name").split(",");
-
-    private static String[] todoKeys = RedisConnectionConfigurer.
-            getRedisConnectionProperty("redis.todo.name").split(",");
-
+    private static String visitedKey = RedisConnectionConfigurer.
+            getRedisConnectionProperty("redis.visited.name");
 
     /**
      * 记录以解析的namespace，如果hostNamespace的数量为1，说明这是一个定向爬虫，爬去特定的站点。
+     * 这里面存放的都是网站的地址： 且不带www. ，比如www.douban.com，在hostNamespace存放的就是douban.com
      */
     private static HashSet<String> hostNamespace = new HashSet<String>();
 
@@ -39,9 +36,10 @@ public class RedisNamespaceDesignator {
         // 这里就不使用连接池中的连接了
         RedisConnection redisConnection = new RedisConnection();
         // host namespace in redis
-        Set<String> keys = redisConnection.getJedisClient().keys("*.*");
+        Set<String> sites = redisConnection.getJedisClient().smembers(RedisConnectionConfigurer.
+                getRedisConnectionProperty("redis.namespace"));
 
-        for (String key : keys) {
+        for (String key : sites) {
             hostNamespace.add(key);
         }
 
@@ -52,18 +50,11 @@ public class RedisNamespaceDesignator {
      *
      * @return
      */
-    public static String[] provideVisitedKeys() {
-        return visitedKeys;
+    public static String provideVisitedKey() {
+        return visitedKey;
     }
 
 
-    /**
-     * 提供todo命名空间
-     * @return
-     */
-    public static String[] provideTodoKeys() {
-        return todoKeys;
-    }
 
 
     /**
@@ -75,7 +66,11 @@ public class RedisNamespaceDesignator {
     }
 
 
-    public static void updateHostNamespace(String host) {
+    /**
+     * add操作需要同步
+     * @param host
+     */
+    public synchronized  static void updateHostNamespace(String host) {
         hostNamespace.add(host);
     }
 }

@@ -25,7 +25,6 @@ public class HttpExecutor implements Executor<Document> {
             response = HttpConnectionFactory.getConnection().method(Connection.Method.GET).execute();
             return response.parse() ;
         } catch (IOException e) {
-            e.printStackTrace();
             logger.error("获取document对象出错! " );
         }
         return document ;

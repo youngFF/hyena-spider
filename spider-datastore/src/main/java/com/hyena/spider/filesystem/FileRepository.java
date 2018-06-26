@@ -31,7 +31,14 @@ public class FileRepository {
     public void imgSave(URL url , HttpConnection connection) throws IOException {
 
 
-        byte[] imgBytes = connection.execute().bodyAsBytes();
+        byte[] imgBytes = null ;
+
+        try {
+            imgBytes = connection.execute().bodyAsBytes();
+        } catch (Exception e) {
+            // do nothing
+        }
+
 
         File img = url2File(url);
         //如果文件存在那么直接退出
