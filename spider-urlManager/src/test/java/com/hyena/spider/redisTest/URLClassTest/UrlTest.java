@@ -24,5 +24,6 @@ public class UrlTest {
         System.out.println("query : " + url.getQuery());
         System.out.println("ref : " + url.getRef());
         System.out.println("user info :  " + url.getUserInfo());
+        System.out.println(url.toString());
     }
 }

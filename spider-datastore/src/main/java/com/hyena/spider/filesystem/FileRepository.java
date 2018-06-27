@@ -6,6 +6,7 @@ import com.hyena.spider.log.logger.HyenaLogger;
 import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import org.jsoup.helper.HttpConnection;
 
+import javax.print.DocFlavor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class FileRepository {
         ImgThreadPoolDownLoader.addImgDownloadTask(()-> innerBatchSave(url));
     }
 
-    private void innerBatchSave(URL url) {
+    public void innerBatchSave(URL url) {
 
         //如果批量保存的失败次数为三，说明这个图集不存在  , 0.jpg , 1.jpg , 2.jpg 如果保存0,1,2都失败，那么
         //方法直接返回
@@ -100,14 +101,16 @@ public class FileRepository {
         byte[] imgBytes = null ;
         for (int i = 0; ; i++) {
             String imgSrc = url.getProtocol() + "://" + baseImgSrc + i + suffix;
-            HttpConnection connection = (HttpConnection) HttpConnection.connect(imgSrc);
+            HttpConnection connection = (HttpConnection) HttpConnection.connect(imgSrc).referrer(url.toString());
             try {
                 imgBytes = connection.execute().bodyAsBytes();
-                File img = url2File(url);
+
+                URL imgURL = new URL(imgSrc);
+                File img = url2File(imgURL);
                 //如果文件存在那么直接退出
                 if (img.exists()) {
-                    logger.info("文件已经存在: " + REPOSITORY_HOME +"/"+ url.getHost() + url.getPath());
-                    return ;
+                    logger.info("文件已经存在: " + REPOSITORY_HOME +"/"+ imgURL.getHost() + imgURL.getPath());
+                    continue;
                 }
 
                 FileOutputStream fos = new FileOutputStream(img);
@@ -117,7 +120,7 @@ public class FileRepository {
                 }
                 fos.write(imgBytes);
                 fos.flush();
-                logger.info("图集下载 ---- 成功存放图片 : " + REPOSITORY_HOME +"/"+ url.getHost() + url.getPath());
+                logger.info("图集下载 ---- 成功存放图片 : " + REPOSITORY_HOME +"/"+ imgURL.getHost() + imgURL.getPath());
 
                 // 关闭流 ，不抛出异常，在自己的方法中消化 ,借鉴Spring中处理JDBC的模板方法
                 closeStream(fos);
