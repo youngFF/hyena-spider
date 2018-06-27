@@ -24,7 +24,7 @@ public class HttpExecutor implements Executor<Document> {
             //采用对象配置的链式法则，可以方便对象的配置。
             response = HttpConnectionFactory.getConnection().method(Connection.Method.GET).execute();
             return response.parse() ;
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("获取document对象出错! " );
         }
         return document ;

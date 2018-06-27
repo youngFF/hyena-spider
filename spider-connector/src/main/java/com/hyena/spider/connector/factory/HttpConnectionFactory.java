@@ -15,7 +15,7 @@ public class HttpConnectionFactory {
         // 使用HyenaUrlManager获取url
         String url = HyenaUrlManager.getUrl();
         logger.info("解析url :  " + url);
-        //HttpConnection.connect(url) 会跑出运行时异常
+        //HttpConnection.connect(url) 会抛出运行时异常
         return HttpConnection.connect(url);
     }
 

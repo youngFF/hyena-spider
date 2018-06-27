@@ -1,6 +1,7 @@
 package com.hyena.spider.filesystem;
 
 
+import com.hyena.spider.imgthreadpooldownload.ImgThreadPoolDownLoader;
 import com.hyena.spider.log.logger.HyenaLogger;
 import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import org.jsoup.helper.HttpConnection;
@@ -30,13 +31,15 @@ public class FileRepository {
      */
     public void imgSave(URL url , HttpConnection connection) throws IOException {
 
+        imgBatchSave(url);
 
         byte[] imgBytes = null ;
 
         try {
             imgBytes = connection.execute().bodyAsBytes();
         } catch (Exception e) {
-            // do nothing
+            //因为在生成imgBytes的过程中出错，所以接下来的方法肯定也是错的，所以直接返回
+            return;
         }
 
 
@@ -49,6 +52,9 @@ public class FileRepository {
 
         FileOutputStream fos = new FileOutputStream(img);
 
+        if (imgBytes == null) {
+            return ;
+        }
         fos.write(imgBytes);
         fos.flush();
         logger.info("成功存放图片 : " + REPOSITORY_HOME +"/"+ url.getHost() + url.getPath());
@@ -60,6 +66,75 @@ public class FileRepository {
         // imgBuffer.clear()
     }
 
+    /**
+     * 将所有的图集下载任务交给ImgThreadPoolDownLoader
+     * @param url
+     */
+    public void imgBatchSave(URL url) {
+        ImgThreadPoolDownLoader.addImgDownloadTask(()-> innerBatchSave(url));
+    }
+
+    private void innerBatchSave(URL url) {
+
+        //如果批量保存的失败次数为三，说明这个图集不存在  , 0.jpg , 1.jpg , 2.jpg 如果保存0,1,2都失败，那么
+        //方法直接返回
+        int failedTime = 0 ;
+
+        /**
+         * 图片的地址常常是这样的: http://${host}/path/${num}.jpg
+         * 我们首先找到最后一个点的位置，注意：要考虑到异常，
+         */
+        int dotIndex = url.getPath().lastIndexOf(".");
+
+        //如果图片不是这样命名的直接返回
+        if (dotIndex == -1) {
+            return ;
+        }
+
+        String baseImgSrc = url.getHost() + url.getPath().substring(0,dotIndex -1 ) ;
+
+        String suffix = "." + url.getPath().substring(dotIndex + 1, url.getPath().length());
+
+
+
+        byte[] imgBytes = null ;
+        for (int i = 0; ; i++) {
+            String imgSrc = url.getProtocol() + "://" + baseImgSrc + i + suffix;
+            HttpConnection connection = (HttpConnection) HttpConnection.connect(imgSrc);
+            try {
+                imgBytes = connection.execute().bodyAsBytes();
+                File img = url2File(url);
+                //如果文件存在那么直接退出
+                if (img.exists()) {
+                    logger.info("文件已经存在: " + REPOSITORY_HOME +"/"+ url.getHost() + url.getPath());
+                    return ;
+                }
+
+                FileOutputStream fos = new FileOutputStream(img);
+
+                if (imgBytes == null) {
+                    return ;
+                }
+                fos.write(imgBytes);
+                fos.flush();
+                logger.info("图集下载 ---- 成功存放图片 : " + REPOSITORY_HOME +"/"+ url.getHost() + url.getPath());
+
+                // 关闭流 ，不抛出异常，在自己的方法中消化 ,借鉴Spring中处理JDBC的模板方法
+                closeStream(fos);
+
+                // 方法尾不需要再次调用imgBuffer.clear，因为在方法开头就已经调用了
+                // imgBuffer.clear()
+            } catch (Exception e) {
+                if (failedTime == 3) {
+                    return ;
+                }
+                failedTime ++ ;
+                continue;
+            }
+
+
+        }
+    }
 
     /**
      * 将url转换为文件系统中的地址

@@ -1,11 +1,11 @@
 package com.hyena.spider.filter;
 
 import com.hyena.spider.configuration.HyenaFrameworkConfiguration;
+import com.hyena.spider.redis.configure.RedisConnectionConfigurer;
 
 public class UrlFilter {
 
     private static final String SINGLE_SITE = HyenaFrameworkConfiguration.getHyenaConfig("hyena.single.site");
-
 
     /**
      * 将url格式化 ，比如所有的url都是http,https开头，
@@ -20,7 +20,7 @@ public class UrlFilter {
     public static String formatUrl(String url) {
         // 利用布尔短路特性，将SINGLE_SITE != null 写在前面，因为大多数情况下
         // 都是null的情况多 ，这样的好处就是能较少语句的执行
-        if ( SINGLE_SITE != null && !SINGLE_SITE.equals("") ){
+        if ( SINGLE_SITE != null && !SINGLE_SITE.equals("")){
             // 单一站点
             return url.contains(SINGLE_SITE) ? url : null ;
         }else{

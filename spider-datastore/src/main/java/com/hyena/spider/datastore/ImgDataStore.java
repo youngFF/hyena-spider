@@ -24,8 +24,9 @@ public class ImgDataStore {
             // 图片的url地址
             URL url = new URL(imgSrc);
 
-            HttpConnection connection = (HttpConnection) HttpConnection.connect(url);
-            connection.referrer(imgSrc);
+            //获得连接imgSrc的连接对象
+            HttpConnection connection = (HttpConnection) HttpConnection.connect(url).referrer(imgSrc);
+
 
             FileRepository fileRepository = new FileRepository();
 

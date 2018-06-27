@@ -1,6 +1,7 @@
 package com.hyena.spider.readSeeds;
 
 import com.hyena.spider.redis.connectionUtil.RedisConnection;
+import com.hyena.spider.redis.factory.RedisConnectionPool;
 import com.hyena.spider.redis.url.manager.HyenaUrlManager;
 import com.hyena.spider.work.HyenaWorker;
 import org.jsoup.Jsoup;
@@ -8,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,16 +39,17 @@ public class SchedulerSimulation {
 //            HyenaUrlManager.putUrl(url, connection);
 //        }
 
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 3000,
-                TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(50));
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 10, 10000,
+                TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(20));
         //装配线程池
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
+            HyenaWorker worker = new HyenaWorker();
             System.out.println("添加worker ：　" + i);
-            executor.execute(new HyenaWorker());
+            executor.execute(worker);
         }
 
 
-        new Thread(()->{
+       /* new Thread(()->{
             //等待的任务数
             int size = executor.getQueue().size();
 
@@ -68,7 +71,7 @@ public class SchedulerSimulation {
 
 
         }).start();
-
+*/
 //        connection.setJedisConnState(RedisConnection.JedisState.AVAILABLE);
     }
 
@@ -85,12 +88,13 @@ public class SchedulerSimulation {
         Elements elements = document.getElementsByTag("a");
 
 
+        RedisConnection connection = RedisConnectionPool.getConnection();
         String href = null ;
         for (Element url : elements) {
             href = url.attr("abs:href");
 
             if (href != null && !href.equals("")) {
-                seeds.add(href);
+                HyenaUrlManager.putUrl(href , connection);
             }
         }
 
@@ -98,10 +102,31 @@ public class SchedulerSimulation {
     }
 
 
+    @Test
+    public void firstParseSinleSite() throws IOException {
+        extractUrl("http://www.jd.com");
+    }
+
+
+    public static void main(String[] args) {
+        for (int i = 0; i < 20; i++) {
+            new Thread(()->{
+                try {
+                    test();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+    }
 
     // passed
     @Test
-    public void test() {
-        new HyenaWorker().run();
+    public static void test() throws ClassNotFoundException {
+        Class.forName("com.hyena.spider.scheduler.HyenaScheduler");
+        while (true) {
+            new HyenaWorker().run();
+        }
     }
 }

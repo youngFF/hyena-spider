@@ -25,12 +25,12 @@ public class RedisNamespaceDesignator {
     private static String visitedKey = RedisConnectionConfigurer.
             getRedisConnectionProperty("redis.visited.name");
 
+    private static String namespaceKey = RedisConnectionConfigurer.getRedisConnectionProperty("redis.namespace");
     /**
      * 记录以解析的namespace，如果hostNamespace的数量为1，说明这是一个定向爬虫，爬去特定的站点。
      * 这里面存放的都是网站的地址： 且不带www. ，比如www.douban.com，在hostNamespace存放的就是douban.com
      */
     private static HashSet<String> hostNamespace = new HashSet<String>();
-
 
     static {
         // 这里就不使用连接池中的连接了
@@ -66,6 +66,9 @@ public class RedisNamespaceDesignator {
     }
 
 
+    public static String getNamespaceKey() {
+        return namespaceKey ;
+    }
     /**
      * add操作需要同步
      * @param host

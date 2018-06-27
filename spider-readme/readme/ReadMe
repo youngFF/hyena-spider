@@ -1,0 +1,71 @@
+前言：20天，终于把hyena第一版做了出来，挺有意思，能学到好多东西：
+    具体方面有，项目架构，项目依赖，代码书写
+
+以下“hyena” 简称“鬣狗”
+
+
+项目介绍：
+
+”鬣狗“是以模块为单位的，具体模块以及相应的功能如下。
+
+spider-parent :
+        父模块，引入所有模块都需要的依赖（jar包），jsoup,log4j ，为其它模块提供继承属性
+
+
+spider-logger :
+        日志模块，对第三方日志进行封装，形成自己的日志模块：主要是为”鬣狗“提供自己的日志模块，方便以后替换第三方
+        日志框架
+
+spider-configuration :
+        "鬣狗"配置模块，主要配置有线程池启动的线程数目等，具体配置请看里面的配置文件
+
+
+spider-connector :
+        前端连接器，主要是直接面向互联网，生成HttpConnection
+
+spider-httpexecutor :
+        http执行器，主要利用前端连接器生成的HttpConnection对象的execute方法，生成Response对象
+
+spider-parser :
+        解析器模块，主要对Jsoup生成的Document对象进行解析，采用过滤器的方式进行处理
+
+spider-datastore:
+        持久化模块，主要对url和图片进行本地化处理，以及对图片的url地址进行本地映射
+
+spider-validate :
+        validate模块，主要提供一些非空判断，想法参考了Jsoup的Validate类。
+
+spider-performace :
+        ”鬣狗“性能监视模块，主要是对流量进行监视。 --- 我的实现方法是用一个线程将监视信息写到本地文件中
+
+        -----  还未实现
+
+spider-readme:
+        存放写项目时候的一些资料，自己遇见的一些问题。以及项目架构图
+
+
+spider-worker:
+        worker类，代表一项工作，提供给Scheduler的接口
+
+spider-test:
+        test模块，主要运行整个项目的爬取实验，每个模块的测试在自己模块做。
+         这个模块只是运行HyenaScheduler类的方法，也就是爬虫入口方法
+
+spider-helper:
+        helper模块，---这个本来我想写一个图片库
+        针对字节数组，生成图片，并获取图片的信息，包括它的长宽，等等。。。
+
+        --- 未实现
+
+
+        ！！！　”不要使用第三方图片处理库，因为这样你将得不到锻炼“
+
+
+
+
+
+
+项目运行环境：
+
+
+项目运行方法：

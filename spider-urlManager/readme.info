@@ -1,7 +1,7 @@
 HyenaUrlManager：采用全新的设计方式，不采用二级缓存的方式存储todo，visited队列。而是将
 todo，visited，namespace全部移动到redis中。
 
-也就是说在redis中维护四个队列名称分别为: hyena-todo , hyena-visited , hyena-namespace
+也就是说在redis中维护三个队列名称分别为: hyena-todo , hyena-visited , hyena-namespace
 
 
 其中

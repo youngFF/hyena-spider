@@ -2,13 +2,15 @@ package com.hyena.spider.filter;
 
 import com.hyena.spider.extrator.Extractor;
 import com.hyena.spider.httpexecutor.HttpExecutor;
+import com.hyena.spider.log.logger.HyenaLogger;
+import com.hyena.spider.log.logger.HyenaLoggerFactory;
 import org.jsoup.nodes.Document;
 
 import java.util.ArrayList;
 
 public class DocFilterChain {
 
-
+    private static HyenaLogger logger = HyenaLoggerFactory.getLogger(DocFilterChain.class);
 
     private ArrayList<Extractor> filters = new ArrayList<>();
 
@@ -46,6 +48,11 @@ public class DocFilterChain {
         //提供Document对象
         HttpExecutor executor = new HttpExecutor() ;
         Document doc = executor.execute();
+
+        if (doc == null) {
+            logger.warn("document对象为null");
+            return;
+        }
 
         for (Extractor extractor : filters) {
             extractor.extract(doc);
