@@ -72,7 +72,7 @@ public class FileRepository {
      * @param url
      */
     public void imgBatchSave(URL url) {
-        ImgThreadPoolDownLoader.addImgDownloadTask(()-> innerBatchSave(url));
+        innerBatchSave(url);
     }
 
     public void innerBatchSave(URL url) {
